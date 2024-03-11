@@ -1,0 +1,813 @@
+<resources>
+    <string name="app_name">UNIT_V</string>
+
+    <string name="scrolltext">
+        "
+        UNIT V  :- ACTIVITY AND MULTIMEDIA WITH DATABASES
+ SUBJECT :- MAD (CM/CO/IF/CW) CODE :22617
+......................................................................................................................................
+Syllbus:-
+1)	Intent, Intent_Filter
+2)	Activity Lifecycle; Broadcast Lifecycle
+3)	Content Provider; Fragment
+4)	Service : Feature of service, Android platform service, Defining  new  service, Service Lifecycle, Permission, example of service
+5)	Android System Architecture, multimedia framework, play Audio and Video, Text to speech, sensors, Async tasks
+6)	Audio Capture, Camera
+7)	Bluetooth, Animation
+8)	SQLite Database, Necessity of SQLite, Creation and connection of database, Extracting value from cursors, Transaction.
+
+.....................................................................................................................................
+
+
+1.1)	Intent
+An intent is a description of an operation to be perform.
+An intent is messaging object used to request an action from another app component via the android system
+ Android uses intent for communication between the component to another application, It also provides the connectivity between two apps.
+For example: on occurrence of any event intent facilitate you to redirect your activity to another active, by calling, startActivity() as
+
+Intent intent = new Intent(getApplicationContext(), SecondActivity.class);
+StartActivity(intent);
+
+ In the above example  SecondActivity.java. getApplicationContext() return the context for your foreground activity.
+
+An intent can be used to :
+
+I.	Start an Activity.
+II.	Start a Service.
+III.	Deliver a Broadcast
+
+Two types of intents
+1.	Implicit intent
+2.	Explicit intent
+
+1 Implicit intent : ask system to find an activity class with a registered handler tha can handle this request
+
+2 Explicit intent :  Start an activity  of a specific class.
+
+Example implicit intent
+An implicit intent specifies an action that can invoke any app on the device able to perform the action. Using an implicit intent is useful when your app cannot perform the action, but other apps probably can and you'd like the user to pick which app to use.
+For example, if you have content that you want the user to share with other people, create an intent with the ACTION_SEND action and add extras that specify the content to share. When you call startActivity() with that intent, the user can pick an app through which to share the content.
+
+Syntax
+ Intent IntentObj = new Intnet (Intent.Action_view);
+IntentObj. setData(Uri.parse(“https://www.google.com”));
+startActivity(intentObj);
+
+
+Example Explicit intent
+
+Android Explicit intent specifies the component to be invoked from activity. In other words, we can call another activity in android by explicit intent.
+
+We can also pass the information from one activity to another using explicit intent.
+Here, we are going to see an example to call one activity from another and vice-versa.
+
+Syntax
+Intent i = new Intent(getApplicationContext(), ActivityTwo.class);
+startActivity(i);
+
+
+activity_main.xml
+
+Here we have to define one button
+
+MainActivity.java
+
+
+package example.javatpoint.com.implicitintent;
+import *
+
+public class MainActivity extends AppCompatActivity {
+    Button button;
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        button = findViewById(R.id.button);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent=new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                startActivity(intent);
+            }
+        });
+    }
+}
+
+1.2)	Intent Filters
+
+You have seen how an Intent has been used to call an another activity. Android OS uses filters to pinpoint the set of Activities, Services, and Broadcast receivers that can handle the Intent with help of specified set of action, categories, data scheme associated with an Intent. You will use intent-filter element in the manifest file to list down actions, categories and data types associated with any activity, service, or broadcast receiver.
+
+Following is an example of a part of AndroidManifest.xml file to specify an activity com.example.My
+
+Application.CustomActivity which can be invoked by either of the two mentioned actions, one category, and one data
+
+
+
+2.1) Android Activity Lifecycle
+Android Activity Lifecycle is controlled by 7 methods of android.app.Activity class. The android Activity is the subclass of ContextThemeWrapper class.An activity is the single screen in android. It is like window or frame of Java.By the help of activity, you can place all your UI components or widgets in a single screen.The 7 lifecycle method of Activity describes how activity will behave at different states.
+
+
+
+Method	        Description
+onCreate	    called when activity is first created.
+onStart	        called when activity is becoming visible to the user.
+onResume	    called when activity will start interacting with the user.
+onPause	        called when activity is not visible to the user.
+onStop	        called when activity is no longer visible to the user.
+onRestart	    called after your activity is stopped, prior to start.
+onDestroy	    called before the activity is destroyed.
+
+activity_main.xml
+
+Here we have define one textView
+
+MainActivity.java
+
+package example.javatpoint.com.activitylifecycle;
+
+import android.app.Activity;
+import android.os.Bundle;
+import android.util.Log;
+
+   public class MainActivity extends Activity {
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        Log.d("lifecycle","onCreate invoked");
+    }
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Log.d("lifecycle","onStart invoked");
+    }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.d("lifecycle","onResume invoked");
+    }
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Log.d("lifecycle","onPause invoked");
+    }
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Log.d("lifecycle","onStop invoked");
+    }
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        Log.d("lifecycle","onRestart invoked");
+    }
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.d("lifecycle","onDestroy invoked");
+    }
+}
+
+2.2) BroadcastReceiver
+   Broadcast Receivers simply respond to broadcast messages from other applications or from the system itself. These messages are sometime called events or intents. For example, applications can also initiate broadcasts to let other applications know that some data has been downloaded to the device and is available for them to use, so this is broadcast receiver who will intercept this communication and will initiate appropriate action.
+There are following two important steps to make BroadcastReceiver works for the
+system broadcasted intents −
+•	Creating the Broadcast Receiver.
+A broadcast receiver is implemented as a subclass of BroadcastReceiver class and overriding the onReceive() method where each message is received as a Intent object parameter.
+public class MyReceiver extends BroadcastReceiver
+ {  public void onReceive(Context context, Intent intent)
+       {
+        Toast.makeText(context, "Intent Detected.", Toast.LENGTH_LONG).show();
+       }
+   }
+
+•	Registering Broadcast Receiver
+An application listens for specific broadcast intents by registering a broadcast receiver in AndroidManifest.xml file. Consider we are going to register MyReceiver for system generated event ACTION_BOOT_COMPLETED which is fired by the system once the Android system has completed the boot process.
+
+
+Example of broadcast
+
+MainActivity.java
+package com.example.tutorialspoint7.myapplication;
+
+import android.app.Activity;
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.View;
+
+public class MainActivity extends Activity {
+
+   /** Called when the activity is first created. */
+   @Override
+
+   public void onCreate(Bundle savedInstanceState) {
+      super.onCreate(savedInstanceState);
+      setContentView(R.layout.activity_main);
+   }
+
+
+   // broadcast a custom intent.
+
+   public void broadcastIntent(View view){
+      Intent intent = new Intent();
+      intent.setAction("com.tutorialspoint.CUSTOM_INTENT"); sendBroadcast(intent);
+   }
+}
+
+MyReceiver.java:
+package com.example.tutorialspoint7.myapplication;
+
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.widget.Toast;
+
+
+public class MyReceiver extends BroadcastReceiver{
+
+   public void onReceive(Context context, Intent intent) {
+      Toast.makeText(context, "Intent Detected.", Toast.LENGTH_LONG).show();
+   }
+}
+ modified content of AndroidManifest.xml file. Here we have added receiver... tag to include our service
+
+
+
+
+activity_main.xml file to include a button to broadcast our custom intent −
+  Here we have to define two text view one imagebutton and one simple button
+
+3.1) Content provide
+
+
+A content provider manages access to a central repository of data. A provider is part of an Android application, which often provides its own UI for working with the data. However, content providers are primarily intended to be used by other applications, which access the provider using a provider client object. Together, providers and provider clients offer a consistent, standard interface to data that also handles inter-process communication and secure data access.
+
+
+Create Content Provider
+This involves number of simple steps to create your own content provider.
+	First of all you need to create a Content Provider class that extends the ContentProviderbaseclass.
+	Second, you need to define your content provider URI address which will be used to access the content.
+	Next you will need to create your own database to keep the content. Usually, Android uses SQLite database and framework needs to override onCreate() method which will use SQLite Open Helper method to create or open the provider's database. When your application is launched, the onCreate() handler of each of its Content Providers is called on the main application thread.
+	Next you will have to implement Content Provider queries to perform different database specific operations.
+	Finally register your Content Provider in your activity file using provider tag.
+        Here is the list of methods which you need to override in Content Provider class to have your Content Provider working −
+	onCreate() This method is called when the provider is started.
+	query() This method receives a request from a client. The result is returned as a Cursor object.
+	insert()This method inserts a new record into the content provider.
+	delete() This method deletes an existing record from the content provider.
+	update() This method updates an existing record from the content provider.
+	getType() This method returns the MIME type of the data at the given URI.
+
+3.2) Fragment
+A Fragment represents a reusable portion of your apps UI. A fragment defines and manages its own layout, has its own lifecycle, and can handle its own input events. Fragments cannot live on their own they must be hosted by an activity or another fragment. The fragment’s view hierarchy becomes part of, or attaches to, the host’s view hierarchy.
+
+        4.1) Service
+A service is a component that runs in the background to perform long-running operations without needing to interact with the user and it works even if application is destroyed. A service can essentially take two states –
+
+Started
+A service is started when an application component, such as an activity, starts it by calling startService(). Once started, a service can run in the background indefinitely, even if the component that started it is destroyed.
+
+Bound
+
+A service is bound when an application component binds to it by calling bindService(). A bound service offers a client-server interface that allows components to interact with the service, send requests, get results, and even do so across processes with interprocess communication (IPC).
+
+
+
+onStartCommand()
+The system calls this method when another component, such as an activity, requests that the service be started, by calling startService(). If you implement this method, it is your responsibility to stop the service when its work is done, by calling stopSelf() or stopService() methods.
+
+onBind()
+The system calls this method when another component wants to bind with the service by calling bindService(). If you implement this method, you must provide an interface that clients use to communicate with the service, by returning an IBinder object. You must always implement this method, but if you don't want to allow binding, then you should return null.
+
+onUnbind()
+The system calls this method when all clients have disconnected from a particular interface published by the service.
+
+onRebind()
+The system calls this method when new clients have connected to the service, after it had previously been notified that all had disconnected in its onUnbind(Intent).
+
+onCreate()
+The system calls this method when the service is first created using onStartCommand() or onBind(). This call is required to perform one-time set-up.
+
+onDestroy()
+The system calls this method when the service is no longer used and is being destroyed. Your service should implement this to clean up any resources such as threads, registered listeners, receivers, etc.
+Following is the content of the modified main activity file MainActivity.java. This file can include each of the fundamental life cycle methods. We have added startService() and stopService() methods to start and stop the service.
+
+
+package com.example.tutorialspoint7.myapplication;
+
+import android.content.Intent;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+
+import android.os.Bundle;
+import android.app.Activity;
+import android.util.Log;
+import android.view.View;
+
+public class MainActivity extends Activity {
+   String msg = "Android : ";
+
+   /** Called when the activity is first created. */
+   @Override
+   public void onCreate(Bundle savedInstanceState) {
+      super.onCreate(savedInstanceState);
+      setContentView(R.layout.activity_main);
+      Log.d(msg, "The onCreate() event");
+   }
+
+   public void startService(View view) {
+      startService(new Intent(getBaseContext(), MyService.class));
+   }
+
+   // Method to stop the service
+   public void stopService(View view) {
+      stopService(new Intent(getBaseContext(), MyService.class));
+   }
+}
+
+Following is the content of MyService.java. This file can have implementation of one or more methods associated with Service based on requirements. For now we are going to implement only two methods onStartCommand() and onDestroy() −
+package com.example.tutorialspoint7.myapplication;
+
+import android.app.Service;
+import android.content.Intent;
+import android.os.IBinder;
+import android.support.annotation.Nullable;
+import android.widget.Toast;
+
+/**
+   * Created by TutorialsPoint7 on 8/23/2016.
+*/
+
+public class MyService extends Service {
+   @Nullable
+   @Override
+   public IBinder onBind(Intent intent) {
+      return null;
+   }
+
+   @Override
+   public int onStartCommand(Intent intent, int flags, int startId) {
+      // Let it continue running until it is stopped.
+      Toast.makeText(this, "Service Started", Toast.LENGTH_LONG).show();
+      return START_STICKY;
+   }
+
+   @Override
+   public void onDestroy() {
+      super.onDestroy();
+      Toast.makeText(this, "Service Destroyed", Toast.LENGTH_LONG).show();
+   }
+}
+Following will the modified content of AndroidManifest.xml file. Here we have added service... tag to include our service
+
+
+
+Following will be the content of res/layout/activity_main.xml file to include two buttons –
+
+Here we have to define two textView  and one imagebutton and two simple button
+
+       4.2)  Permission
+
+App permissions help support user privacy by protecting access to the following:
+
+	Restricted data, such as system state and a user's contact information.
+
+	Restricted actions, such as connecting to a paired device and recording audio.
+This page provides an overview to how Android permissions work, including a high-level workflow for using permissions, descriptions of different types of permissions, and some best practices for using permissions in your app. Other pages explain how to evaluate whether your app needs to request permissions, , request runtime permissions, and restrict how other apps can interact with your app's components.
+
+Example
+Xml
+
+ Here we have to define two simple button
+
+Main.java
+
+package com.journaldev.runtimepermissions;
+
+import android.content.DialogInterface;
+import android.content.pm.PackageManager;
+import android.os.Build;
+import android.os.Bundle;
+import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+
+import android.view.View;
+import android.widget.Button;
+
+import static android.Manifest.permission.ACCESS_FINE_LOCATION;
+import static android.Manifest.permission.CAMERA;
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {   private static final int PERMISSION_REQUEST_CODE = 200;
+  private View view;
+    protected void onCreate(Bundle savedInstanceState) {  super.onCreate(savedInstanceState);
+   setContentView(R.layout.activity_main);
+Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+setSupportActionBar(toolbar);
+ Button check_permission = (Button) findViewById(R.id.check_permission);
+ Button request_permission = (Button) findViewById(R.id.request_permission);
+ check_permission.setOnClickListener(this);
+ request_permission.setOnClickListener(this);
+}
+    public void onClick(View v) {
+   view = v;
+   int id = v.getId();
+switch (id) {
+    case R.id.check_permission:
+    if (checkPermission())
+ {      Snackbar.make(view, "Permission already granted.", Snackbar.LENGTH_LONG).show();
+  } else {  Snackbar.make(view, "Please request permission.", Snackbar.LENGTH_LONG).show();
+      }  break;
+case R.id.request_permission:
+if (!checkPermission()) {
+  requestPermission();
+} else {  Snackbar.make(view, "Permission already granted.", Snackbar.LENGTH_LONG).show();
+}   break;   }   }
+private boolean checkPermission() {
+ int result = ContextCompat.checkSelfPermission(getApplicationContext(), ACCESS_FINE_LOCATION);
+ int result1 = ContextCompat.checkSelfPermission(getApplicationContext(), CAMERA);
+return result == PackageManager.PERMISSION_GRANTED and result1 == PackageManager.PERMISSION_GRANTED;
+}    private void requestPermission() {
+ActivityCompat.requestPermissions(this, new String[]{ACCESS_FINE_LOCATION, CAMERA}, PERMISSION_REQUEST_CODE);
+    }
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+switch (requestCode) {
+ case PERMISSION_REQUEST_CODE:
+  if (grantResults.length > 0) {
+boolean locationAccepted = grantResults[0] == PackageManager.PERMISSION_GRANTED;
+boolean cameraAccepted = grantResults[1] == PackageManager.PERMISSION_GRANTED;
+if (locationAccepted and cameraAccepted)
+Snackbar.make(view, "Permission Granted, Now you can access location data and camera.", Snackbar.LENGTH_LONG).show();
+else {   Snackbar.make(view, "Permission Denied, You cannot access location data and camera.", Snackbar.LENGTH_LONG).show();
+   if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+   if (shouldShowRequestPermissionRationale(ACCESS_FINE_LOCATION)) {showMessageOKCancel("You need to allow access to both the permissions",
+new DialogInterface.OnClickListener() {
+   @Override
+     public void onClick(DialogInterface dialog, int which) {   if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {requestPermissions(new String[]{ACCESS_FINE_LOCATION, CAMERA},                                             PERMISSION_REQUEST_CODE);
+                                                }
+                                            }
+                                        });
+                                return;
+                            }
+                        }
+
+                    }
+                }
+                break;
+        }
+    }
+    private void showMessageOKCancel(String message, DialogInterface.OnClickListener okListener) {
+        new AlertDialog.Builder(MainActivity.this)
+                .setMessage(message)
+                .setPositiveButton("OK", okListener)
+                .setNegativeButton("Cancel", null)
+                .create()
+                .show();
+    }
+}
+
+Note: Add the permissions that are to be checked at runtime in the Manifest file above the application tag as;
+uses-permission android:name="android.permission.CAMERA"
+uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"
+
+
+7.1) Audio capture
+Android has a built in microphone through which you can capture audio and store it , or play it in your phone. There are many ways to do that but the most common way is through MediaRecorder class.
+Android provides MediaRecorder class to record audio or video. In order to use MediaRecorder class ,you will first create an instance of MediaRecorder class. Its syntax is given below.
+
+MediaRecorder myAudioRecorder = new MediaRecorder();
+
+Now you will set the source , output and encoding format and output file. Their syntax is given below.
+
+myAudioRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+myAudioRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+myAudioRecorder.setAudioEncoder(MediaRecorder.OutputFormat.AMR_NB);
+myAudioRecorder.setOutputFile(outputFile);
+
+After specifying the audio source and format and its output file, we can then call the two basic methods prepare and start to start recording the audio.
+
+myAudioRecorder.prepare();
+myAudioRecorder.start();
+
+Apart from these methods , there are other methods listed in the MediaRecorder class that allows you more control over audio and video recording.
+
+setAudioSource()
+This method specifies the source of audio to be recorded
+
+setVideoSource()
+This method specifies the source of video to be recorded
+
+setOutputFormat()
+This method specifies the audio format in which audio to be stored
+
+setAudioEncoder()
+This method specifies the audio encoder to be used
+
+setOutputFile()
+This method configures the path to the file into which the recorded audio is to be stored
+
+stop()
+This method stops the recording process.
+
+release()
+This method should be called when the recorder instance is needed.
+
+
+Example
+
+Here is the content of src/MainActivity.java
+package com.example.sairamkrishna.myapplication;
+
+import android.media.MediaPlayer;
+import android.media.MediaRecorder;
+
+import android.os.Environment;
+import android.support.v7.app.AppCompatActivity;
+
+import android.os.Bundle;
+import android.view.View;
+
+import android.widget.Button;
+import android.widget.Toast;
+import java.io.IOException;
+import java.util.Random;
+
+import static android.Manifest.permission.RECORD_AUDIO;
+import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
+
+import android.support.v4.app.ActivityCompat;
+import android.content.pm.PackageManager;
+import android.support.v4.content.ContextCompat;
+
+public class MainActivity extends AppCompatActivity {
+
+   Button buttonStart, buttonStop, buttonPlayLastRecordAudio,
+      buttonStopPlayingRecording ;
+   String AudioSavePathInDevice = null;
+   MediaRecorder mediaRecorder ;
+   Random random ;
+   String RandomAudioFileName = "ABCDEFGHIJKLMNOP";
+   public static final int RequestPermissionCode = 1;
+   MediaPlayer mediaPlayer ;
+
+   @Override
+   protected void onCreate(Bundle savedInstanceState) {
+      super.onCreate(savedInstanceState);
+      setContentView(R.layout.activity_main);
+
+      buttonStart = (Button) findViewById(R.id.button);
+      buttonStop = (Button) findViewById(R.id.button2);
+      buttonPlayLastRecordAudio = (Button) findViewById(R.id.button3);
+      buttonStopPlayingRecording = (Button)findViewById(R.id.button4);
+
+      buttonStop.setEnabled(false);
+      buttonPlayLastRecordAudio.setEnabled(false);
+      buttonStopPlayingRecording.setEnabled(false);
+
+      random = new Random();
+
+      buttonStart.setOnClickListener(new View.OnClickListener() {
+         @Override
+         public void onClick(View view) {
+
+            if(checkPermission()) {
+
+               AudioSavePathInDevice =
+                  Environment.getExternalStorageDirectory().getAbsolutePath() + "/" +
+                     CreateRandomAudioFileName(5) + "AudioRecording.3gp";
+
+               MediaRecorderReady();
+
+               try {
+                  mediaRecorder.prepare();
+                  mediaRecorder.start();
+               } catch (IllegalStateException e) {
+                  // TODO Auto-generated catch block
+                  e.printStackTrace();
+               } catch (IOException e) {
+                  // TODO Auto-generated catch block
+                  e.printStackTrace();
+               }
+
+               buttonStart.setEnabled(false);
+               buttonStop.setEnabled(true);
+
+               Toast.makeText(MainActivity.this, "Recording started",
+                  Toast.LENGTH_LONG).show();
+            } else {
+               requestPermission();
+            }
+
+         }
+      });
+
+      buttonStop.setOnClickListener(new View.OnClickListener() {
+         @Override
+         public void onClick(View view) {
+            mediaRecorder.stop();
+            buttonStop.setEnabled(false);
+            buttonPlayLastRecordAudio.setEnabled(true);
+            buttonStart.setEnabled(true);
+            buttonStopPlayingRecording.setEnabled(false);
+
+            Toast.makeText(MainActivity.this, "Recording Completed",
+               Toast.LENGTH_LONG).show();
+         }
+      });
+
+      buttonPlayLastRecordAudio.setOnClickListener(new View.OnClickListener() {
+         @Override
+         public void onClick(View view) throws IllegalArgumentException,
+            SecurityException, IllegalStateException {
+
+            buttonStop.setEnabled(false);
+            buttonStart.setEnabled(false);
+            buttonStopPlayingRecording.setEnabled(true);
+
+            mediaPlayer = new MediaPlayer();
+            try {
+               mediaPlayer.setDataSource(AudioSavePathInDevice);
+               mediaPlayer.prepare();
+            } catch (IOException e) {
+               e.printStackTrace();
+            }
+
+            mediaPlayer.start();
+            Toast.makeText(MainActivity.this, "Recording Playing",
+               Toast.LENGTH_LONG).show();
+         }
+      });
+
+      buttonStopPlayingRecording.setOnClickListener(new View.OnClickListener() {
+         @Override
+         public void onClick(View view) {
+            buttonStop.setEnabled(false);
+            buttonStart.setEnabled(true);
+            buttonStopPlayingRecording.setEnabled(false);
+            buttonPlayLastRecordAudio.setEnabled(true);
+
+            if(mediaPlayer != null){
+               mediaPlayer.stop();
+               mediaPlayer.release();
+               MediaRecorderReady();
+            }
+         }
+      });
+
+   }
+
+   public void MediaRecorderReady(){
+      mediaRecorder=new MediaRecorder();
+      mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+      mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+      mediaRecorder.setAudioEncoder(MediaRecorder.OutputFormat.AMR_NB);
+      mediaRecorder.setOutputFile(AudioSavePathInDevice);
+   }
+
+   public String CreateRandomAudioFileName(int string){
+      StringBuilder stringBuilder = new StringBuilder( string );
+      int i = 0 ;
+      while(i  string ) {
+         stringBuilder.append(RandomAudioFileName.
+            charAt(random.nextInt(RandomAudioFileName.length())));
+
+         i++ ;
+      }
+      return stringBuilder.toString();
+   }
+
+   private void requestPermission() {
+      ActivityCompat.requestPermissions(MainActivity.this, new
+         String[]{WRITE_EXTERNAL_STORAGE, RECORD_AUDIO}, RequestPermissionCode);
+   }
+
+   @Override
+   public void onRequestPermissionsResult(int requestCode,
+      String permissions[], int[] grantResults) {
+      switch (requestCode) {
+         case RequestPermissionCode:
+            if (grantResults.length> 0) {
+            boolean StoragePermission = grantResults[0] ==
+               PackageManager.PERMISSION_GRANTED;
+            boolean RecordPermission = grantResults[1] ==
+               PackageManager.PERMISSION_GRANTED;
+
+            if (StoragePermission andand RecordPermission) {
+               Toast.makeText(MainActivity.this, "Permission Granted",
+                  Toast.LENGTH_LONG).show();
+            } else {
+               Toast.makeText(MainActivity.this,"Permission
+                  Denied",Toast.LENGTH_LONG).show();
+            }
+         }
+         break;
+      }
+   }
+
+   public boolean checkPermission() {
+      int result = ContextCompat.checkSelfPermission(getApplicationContext(),
+         WRITE_EXTERNAL_STORAGE);
+      int result1 = ContextCompat.checkSelfPermission(getApplicationContext(),
+         RECORD_AUDIO);
+      return result == PackageManager.PERMISSION_GRANTED andand
+         result1 == PackageManager.PERMISSION_GRANTED;
+   }
+}
+
+Here is the content of activity_main.xml
+
+Here we have to define one imageView and four simple button
+
+
+Here is the content of AndroidManifest.xml
+
+
+   uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+   uses-permission android:name="android.permission.RECORD_AUDIO"
+	uses-permission android:name="android.permission.STORAGE"
+
+
+    7.2) Camera  in Adroid
+
+Camera is mainly used to capture picture and video. We can control the camera by using methods of camera api.
+Android provides the facility to work on camera by 2 ways:
+1.	By Camera Intent
+2.	By Camera API
+Intent
+By the help of 2 constants of MediaStore class, we can capture picture and video without using the instance of Camera class.
+1.	ACTION_IMAGE_CAPTURE
+2.	ACTION_VIDEO_CAPTURE
+
+Camera
+It is main class of camera api, that can be used to take picture and video.
+SurfaceView
+It represents a surface view ore preview of live camera.
+MediaRecorder
+It is used to record video using camera. It can also be used to record audio files as we have seen in the previous example of media framework.
+Android camera app example by camera
+activity_main.xml
+Here we have to define one imageView and one button
+Activity class
+Let's write the code to capture image using camera and displaying it on the image view.
+File: MainActivity.java
+package com.example.simplecamera;
+
+import android.app.Activity;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.os.Bundle;
+import android.view.Menu;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ImageView;
+
+public class MainActivity extends Activity {
+     private static final int CAMERA_REQUEST = 1888;
+     ImageView imageView;
+     public void onCreate(Bundle savedInstanceState) {
+
+         super.onCreate(savedInstanceState);
+         setContentView(R.layout.activity_main);
+
+         imageView = (ImageView) this.findViewById(R.id.imageView1);
+         Button photoButton = (Button) this.findViewById(R.id.button1);
+
+         photoButton.setOnClickListener(new View.OnClickListener() {
+
+         @Override
+         public void onClick(View v) {
+              Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+              startActivityForResult(cameraIntent, CAMERA_REQUEST);
+         }
+        });
+       }
+
+     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+      if (requestCode == CAMERA_REQUEST) {
+       Bitmap photo = (Bitmap) data.getExtras().get("data");
+       imageView.setImageBitmap(photo);
+      }
+   }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.activity_main, menu);
+        return true;
+    }
+
+}
+
+
+
+
+
+
+         "
+    </string>
+
+</resources>
